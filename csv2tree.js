@@ -1,5 +1,6 @@
 var fs = require('fs')
 
+// source: http://stackoverflow.com/a/28544299/6206015
 function csvToObj (csv) {
   var arr = csv.split('\n')
   var jsonObj = []
@@ -17,6 +18,7 @@ function csvToObj (csv) {
   return JSON.stringify(jsonObj)
 }
 
+// source: http://stackoverflow.com/a/18800059/6206015
 function convertType (value) {
   try {
     return (new Function ('return ' + value + ';'))()
@@ -25,6 +27,7 @@ function convertType (value) {
   }
 }
 
+// source: http://stackoverflow.com/a/19223349/6206015
 function treeify (nodes) {
   var indexed_nodes = {}
   var tree_roots = []
