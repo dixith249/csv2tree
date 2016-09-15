@@ -56,5 +56,9 @@ fs.readFile('./data.csv', function (err, data) {
     console.log(err)
   }
   var flatArray = csvToObj(data.toString())
-  console.log(JSON.stringify(treeify(JSON.parse(flatArray)), undefined, "\t"))
+  var result = JSON.stringify(treeify(JSON.parse(flatArray)), undefined, '\t')
+  var json = JSON.parse(result)
+  for (var i = 0; i < json.length; i++) {
+    console.log(json[i])
+  }
 })

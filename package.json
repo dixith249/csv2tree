@@ -1,0 +1,22 @@
+{
+  "name": "csv2tree",
+  "version": "1.0.0",
+  "description": "Converts flat csv to nested parent/child array in JSON format",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jcreager/csv2tree.git"
+  },
+  "author": "Joe Creager",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jcreager/csv2tree/issues"
+  },
+  "homepage": "https://github.com/jcreager/csv2tree#readme",
+  "dependencies": {
+    
+  }
+}
