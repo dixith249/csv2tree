@@ -45,9 +45,9 @@ function getTree (nodes, callback) {
     } else {
       if (indexed_nodes[parent_id] !== undefined) {
         indexed_nodes[parent_id].children.push(nodes[i])
-     } else {
-       tree_roots.push(nodes[i])
-       nodes[i].warnings = 'parent_id for ' + nodes[i].name + ' does not exist in data'
+      } else {
+        tree_roots.push(nodes[i])
+        nodes[i].warnings = 'parent_id for ' + nodes[i].name + ' does not exist in data'
       }
     }
   }
