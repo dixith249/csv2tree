@@ -2,7 +2,7 @@ var fs = require('fs')
 
 // converts csv to JSON object
 // source: http://stackoverflow.com/a/28544299/6206015
-function csvToObj (csv) {
+function csvToObj (csv, callback) {
   var arr = csv.split('\n')
   var jsonObj = []
   var headers = arr[0].split(',')
@@ -16,14 +16,14 @@ function csvToObj (csv) {
     }
     jsonObj.push(obj)
   }
-  return JSON.stringify(jsonObj)
+  return callback(null, JSON.stringify(jsonObj))
 }
 
 // converts string to type such as null, true, false, etc
 // source: http://stackoverflow.com/a/18800059/6206015
 function convertType (value) {
   try {
-    return (new Function ('return ' + value + ';'))()
+    return (new Function ('return ' + value))()
   } catch (e) {
     return value
   }
@@ -31,14 +31,14 @@ function convertType (value) {
 
 // converts flat file to nested tree view
 // source: http://stackoverflow.com/a/19223349/6206015
-function treeify (nodes) {
+function getTree (nodes, callback) {
   var indexed_nodes = {}
   var tree_roots = []
-  for (var i = 0; i < nodes.length; i += 1) {
+  for (var i = 0; i < nodes.length; i++) {
     indexed_nodes[nodes[i].id] = nodes[i]
     indexed_nodes[nodes[i].id].children = []
   }
-  for (var i = 0; i < nodes.length; i += 1) {
+  for (var i = 0; i < nodes.length; i++) {
     var parent_id = nodes[i].parent_id
     if (convertType(parent_id) === undefined || parent_id === nodes[i].id) {
       tree_roots.push(nodes[i])
@@ -51,14 +51,23 @@ function treeify (nodes) {
       }
     }
   }
-  return tree_roots
+  return callback(null, tree_roots)
 }
 
 fs.readFile('./data.csv', function (err, data) {
   if (err) {
     console.log(err)
   }
-  var flatArray = csvToObj(data.toString())
-  var result = JSON.stringify(treeify(JSON.parse(flatArray)), undefined, '\t')
-  console.log(result)
+  data = data.toString()
+  csvToObj(data, function (err, array) {
+    if (err) {
+      return err
+    }
+    getTree(JSON.parse(array), function (err, tree) {
+      if (err) {
+        console.log(err)
+      }
+      console.log(JSON.stringify(tree, undefined, '\t'))
+    })
+  })
 })
