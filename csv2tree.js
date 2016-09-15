@@ -54,20 +54,22 @@ function getTree (nodes, callback) {
   return callback(null, tree_roots)
 }
 
-fs.readFile('./data.csv', function (err, data) {
-  if (err) {
-    console.log(err)
-  }
-  data = data.toString()
-  csvToObj(data, function (err, array) {
+module.exports = function csv2tree (csv, callback) {
+  fs.readFile(csv, function (err, data) {
     if (err) {
-      return err
+      callback(err)
     }
-    getTree(JSON.parse(array), function (err, tree) {
+    data = data.toString()
+    csvToObj(data, function (err, array) {
       if (err) {
-        console.log(err)
+        callback(err)
       }
-      console.log(JSON.stringify(tree, undefined, '\t'))
+      getTree(JSON.parse(array), function (err, tree) {
+        if (err) {
+          callback(err)
+        }
+        callback(null, JSON.stringify(tree, undefined, '\t'))
+      })
     })
   })
-})
+}
