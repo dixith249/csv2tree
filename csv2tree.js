@@ -1,5 +1,6 @@
 var fs = require('fs')
 
+// converts csv to JSON object
 // source: http://stackoverflow.com/a/28544299/6206015
 function csvToObj (csv) {
   var arr = csv.split('\n')
@@ -18,6 +19,7 @@ function csvToObj (csv) {
   return JSON.stringify(jsonObj)
 }
 
+// converts string to type such as null, true, false, etc
 // source: http://stackoverflow.com/a/18800059/6206015
 function convertType (value) {
   try {
@@ -27,6 +29,7 @@ function convertType (value) {
   }
 }
 
+// converts flat file to nested tree view
 // source: http://stackoverflow.com/a/19223349/6206015
 function treeify (nodes) {
   var indexed_nodes = {}
@@ -57,8 +60,5 @@ fs.readFile('./data.csv', function (err, data) {
   }
   var flatArray = csvToObj(data.toString())
   var result = JSON.stringify(treeify(JSON.parse(flatArray)), undefined, '\t')
-  var json = JSON.parse(result)
-  for (var i = 0; i < json.length; i++) {
-    console.log(json[i])
-  }
+  console.log(result)
 })
