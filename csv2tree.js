@@ -54,6 +54,7 @@ function getTree (nodes, callback) {
   return callback(null, tree_roots)
 }
 
+// Converts CSV to JSON object and then passes the object to the treeify function
 module.exports = function csv2tree (csv, callback) {
   fs.readFile(csv, function (err, data) {
     if (err) {
