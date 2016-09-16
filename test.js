@@ -7,7 +7,8 @@ var args = process.argv
 
 program
   .version('1.0.0')
-  .option('-t, --tree', 'Unix style tree-view')
+  .option('-t, --tree', 'Outputs as Unix style tree-view')
+  .option('-j, --json', 'Outputs as JSON')
   .parse(args)
 
 var count = 0
@@ -27,8 +28,17 @@ if (data) {
     if (err) {
       console.log(err)
     }
-    console.log(tree,
-       treeify.asTree(JSON.parse(tree), true)
-    )
+    if (program.tree) {
+      var output = treeify.asTree(JSON.parse(tree), true)
+    } else if (program.tree && program.json) {
+      output = {}
+      output.tree = treeify.asTree(JSON.parse(tree), true)
+      output.json = tree
+    } else if (program.json) {
+      output = tree
+    } else {
+      output = tree
+    }
+    console.log(output)
   })
 }
