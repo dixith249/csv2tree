@@ -28,3 +28,75 @@ id,parent_id,name
 6,2,Jack
 7,6,James
 ~~~
+
+This data is typical of the query output of a table which contains a 1:n parent child relationship where the parent record id refers to the id or primary key of another record in the same table.  The data would be much easier to understand visually if it was represented as a nested tree.
+
+~~~json
+[
+	{
+		"id": "1",
+		"parent_id": "",
+		"name": "Jim",
+		"children": [
+			{
+				"id": "2",
+				"parent_id": "1",
+				"name": "Jeff",
+				"children": [
+					{
+						"id": "3",
+						"parent_id": "2",
+						"name": "John",
+						"children": []
+					},
+					{
+						"id": "6",
+						"parent_id": "2",
+						"name": "Jack",
+						"children": [
+							{
+								"id": "7",
+								"parent_id": "6",
+								"name": "James",
+								"children": []
+							}
+						]
+					}
+				]
+			},
+			{
+				"id": "4",
+				"parent_id": "1",
+				"name": "Jason",
+				"children": [
+					{
+						"id": "5",
+						"parent_id": "4",
+						"name": "Jacob",
+						"children": []
+					}
+				]
+			}
+		]
+	},
+	{
+		"id": "",
+		"children": []
+	}
+]
+~~~
+
+This representation of the data is also easily converted to something like a unix style directory tree using a module such as treeify.
+
+##API
+
+~~~javascript
+csv2tree(csv, id, parent_id, callback)
+~~~
+
+###Example Usage
+
+~~~javascript
+var csv2tree = require(csv2tree)
+csv2tree('~/path/to/csv')
+~~~
