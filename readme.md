@@ -98,5 +98,12 @@ csv2tree(csv, id, parent_id, callback)
 
 ~~~javascript
 var csv2tree = require(csv2tree)
-csv2tree('~/path/to/csv')
+
+var csv = '~/path/to/csv'
+var id = 'id'
+var parent_id = 'parent_id'
+
+csv2tree(csv, id, parent_id, function (tree) {
+  console.log(tree)
+})
 ~~~
