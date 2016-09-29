@@ -41,7 +41,7 @@ if (data) {
   var name = base.slice(0, base.length - ext.length)
   var output = null
   var filename = ''
-  csv2tree(data, function (err, tree) {
+  csv2tree(data, 'id', 'parent_id', function (err, tree) {
     if (err) {
       console.log(err)
     }

@@ -31,20 +31,20 @@ function convertType (value) {
 
 // converts flat file to nested tree view
 // source: http://stackoverflow.com/a/19223349/6206015
-function getTree (nodes, callback) {
+function getTree (nodes, id, parent_id, callback) {
   var indexed_nodes = {}
   var tree_roots = []
   for (var i = 0; i < nodes.length; i++) {
-    indexed_nodes[nodes[i].id] = nodes[i]
-    indexed_nodes[nodes[i].id].children = []
+    indexed_nodes[nodes[i][id]] = nodes[i]
+    indexed_nodes[nodes[i][id]].children = []
   }
   for (var i = 0; i < nodes.length; i++) {
-    var parent_id = nodes[i].parent_id
-    if (convertType(parent_id) === undefined || parent_id === nodes[i].id) {
+    var parent = nodes[i][parent_id]
+    if (convertType(parent) === undefined || parent === nodes[i][id]) {
       tree_roots.push(nodes[i])
     } else {
-      if (indexed_nodes[parent_id] !== undefined) {
-        indexed_nodes[parent_id].children.push(nodes[i])
+      if (indexed_nodes[parent] !== undefined) {
+        indexed_nodes[parent].children.push(nodes[i])
       } else {
         tree_roots.push(nodes[i])
         nodes[i].warnings = 'parent_id for ' + nodes[i].name + ' does not exist in data'
@@ -55,7 +55,7 @@ function getTree (nodes, callback) {
 }
 
 // Converts CSV to JSON object and then passes the object to the treeify function
-module.exports = function csv2tree (csv, callback) {
+module.exports = function csv2tree (csv, id, parent_id, callback) {
   fs.readFile(csv, function (err, data) {
     if (err) {
       callback(err)
@@ -65,7 +65,7 @@ module.exports = function csv2tree (csv, callback) {
       if (err) {
         callback(err)
       }
-      getTree(JSON.parse(array), function (err, tree) {
+      getTree(JSON.parse(array), id, parent_id, function (err, tree) {
         if (err) {
           callback(err)
         }
