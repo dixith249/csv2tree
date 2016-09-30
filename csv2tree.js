@@ -1,5 +1,3 @@
-var fs = require('fs')
-
 // converts csv to JSON object
 // source: http://stackoverflow.com/a/28544299/6206015
 function csvToObj (csv, callback) {
@@ -56,21 +54,15 @@ function getTree (nodes, id, parent_id, callback) {
 
 // Converts CSV to JSON object and then passes the object to the treeify function
 module.exports = function csv2tree (csv, id, parent_id, callback) {
-  fs.readFile(csv, function (err, data) {
+  csvToObj(csv, function (err, array) {
     if (err) {
       callback(err)
     }
-    data = data.toString()
-    csvToObj(data, function (err, array) {
+    getTree(JSON.parse(array), id, parent_id, function (err, tree) {
       if (err) {
         callback(err)
       }
-      getTree(JSON.parse(array), id, parent_id, function (err, tree) {
-        if (err) {
-          callback(err)
-        }
-        callback(null, JSON.stringify(tree, undefined, '\t'))
-      })
+      callback(null, JSON.stringify(tree, undefined, '\t'))
     })
   })
 }

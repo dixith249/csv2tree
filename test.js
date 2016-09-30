@@ -41,32 +41,35 @@ if (data) {
   var name = base.slice(0, base.length - ext.length)
   var output = null
   var filename = ''
-  csv2tree(data, 'id', 'parent_id', function (err, tree) {
-    if (err) {
-      console.log(err)
-    }
-    if (program.tree) {
-      output = treeify.asTree(JSON.parse(tree), true)
-      ext = '.txt'
-    } else if (program.tree && program.json) {
-      output = {}
-      output.tree = treeify.asTree(JSON.parse(tree), true)
-      output.json = tree
-    } else if (program.json) {
-      output = tree
-      ext = '.json'
-    } else {
-      output = tree
-    }
-    console.log(output)
-    filename = name + ext
-    if (program.write) {
-      write(filename, output, function (err, name) {
-        if (err) {
-          console.log(err)
-        }
-        console.log(name + ' saved')
-      })
-    }
+
+  fs.readFile(data, function (err, csv) {
+    csv2tree(csv.toString(), 'id', 'parent_id', function (err, tree) {
+      if (err) {
+        console.log(err)
+      }
+      if (program.tree) {
+        output = treeify.asTree(JSON.parse(tree), true)
+        ext = '.txt'
+      } else if (program.tree && program.json) {
+        output = {}
+        output.tree = treeify.asTree(JSON.parse(tree), true)
+        output.json = tree
+      } else if (program.json) {
+        output = tree
+        ext = '.json'
+      } else {
+        output = tree
+      }
+      console.log(output)
+      filename = name + ext
+      if (program.write) {
+        write(filename, output, function (err, name) {
+          if (err) {
+            console.log(err)
+          }
+          console.log(name + ' saved')
+        })
+      }
+    })
   })
 }
