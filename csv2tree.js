@@ -1,7 +1,6 @@
-var fs = require('fs')
-
+// converts csv to JSON object
 // source: http://stackoverflow.com/a/28544299/6206015
-function csvToObj (csv) {
+function csvToObj (csv, callback) {
   var arr = csv.split('\n')
   var jsonObj = []
   var headers = arr[0].split(',')
@@ -15,50 +14,59 @@ function csvToObj (csv) {
     }
     jsonObj.push(obj)
   }
-  return JSON.stringify(jsonObj)
+  return callback(null, JSON.stringify(jsonObj))
 }
 
+// converts string to type such as null, true, false, etc
 // source: http://stackoverflow.com/a/18800059/6206015
 function convertType (value) {
   try {
-    return (new Function ('return ' + value + ';'))()
+    return (new Function ('return ' + value))()
   } catch (e) {
     return value
   }
 }
 
+// converts flat file to nested tree view
 // source: http://stackoverflow.com/a/19223349/6206015
-function treeify (nodes) {
-  var indexed_nodes = {}
-  var tree_roots = []
-  for (var i = 0; i < nodes.length; i += 1) {
-    indexed_nodes[nodes[i].id] = nodes[i]
-    indexed_nodes[nodes[i].id].children = []
+function getTree (nodes, id, parent_id, callback) {
+  var indexed_nodes = {} // empty object for the indexed objects
+  var tree_roots = [] // empty array for child objects
+  for (var i = 0; i < nodes.length; i++) {
+    // id property of indexed_nodes @ array position nodes[i] = nodes[i]
+    // the reason that there will always be an empty record is because...
+    indexed_nodes[nodes[i][id]] = nodes[i]
+    indexed_nodes[nodes[i][id]].children = []
   }
-  for (var i = 0; i < nodes.length; i += 1) {
-    var parent_id = nodes[i].parent_id
-    if (convertType(parent_id) === undefined || parent_id === nodes[i].id) {
-      tree_roots.push(nodes[i])
+  for (i = 0; i < nodes.length; i++) {
+    var parent = nodes[i][parent_id]
+    if (convertType(parent) === undefined || parent === nodes[i][id]) {
+      if (nodes[i].id !== '') {
+        tree_roots.push(nodes[i])
+      }
     } else {
-      if (indexed_nodes[parent_id] !== undefined) {
-        indexed_nodes[parent_id].children.push(nodes[i])
-     } else {
-       tree_roots.push(nodes[i])
-       nodes[i].warnings = 'parent_id for ' + nodes[i].name + ' does not exist in data'
+      if (indexed_nodes[parent] !== undefined) {
+        indexed_nodes[parent].children.push(nodes[i])
+      } else {
+        tree_roots.push(nodes[i])
+        nodes[i].warnings = 'parent_id for ' + nodes[i].name + ' does not exist in data'
       }
     }
   }
-  return tree_roots
+  return callback(null, tree_roots)
 }
 
-fs.readFile('./data.csv', function (err, data) {
-  if (err) {
-    console.log(err)
-  }
-  var flatArray = csvToObj(data.toString())
-  var result = JSON.stringify(treeify(JSON.parse(flatArray)), undefined, '\t')
-  var json = JSON.parse(result)
-  for (var i = 0; i < json.length; i++) {
-    console.log(json[i])
-  }
-})
+// Converts CSV to JSON object and then passes the object to the treeify function
+module.exports = function csv2tree (csv, id, parent_id, callback) {
+  csvToObj(csv, function (err, array) {
+    if (err) {
+      callback(err)
+    }
+    getTree(JSON.parse(array), id, parent_id, function (err, tree) {
+      if (err) {
+        callback(err)
+      }
+      callback(null, JSON.stringify(tree, undefined, '\t'))
+    })
+  })
+}

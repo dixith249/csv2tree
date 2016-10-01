@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/jcreager/csv2tree#readme",
   "dependencies": {
-    
+    "commander": "^2.9.0",
+    "treeify": "^1.0.1"
   }
 }
