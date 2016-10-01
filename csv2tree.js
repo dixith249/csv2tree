@@ -30,16 +30,20 @@ function convertType (value) {
 // converts flat file to nested tree view
 // source: http://stackoverflow.com/a/19223349/6206015
 function getTree (nodes, id, parent_id, callback) {
-  var indexed_nodes = {}
-  var tree_roots = []
+  var indexed_nodes = {} // empty object for the indexed objects
+  var tree_roots = [] // empty array for child objects
   for (var i = 0; i < nodes.length; i++) {
+    // id property of indexed_nodes @ array position nodes[i] = nodes[i]
+    // the reason that there will always be an empty record is because...
     indexed_nodes[nodes[i][id]] = nodes[i]
     indexed_nodes[nodes[i][id]].children = []
   }
   for (var i = 0; i < nodes.length; i++) {
     var parent = nodes[i][parent_id]
     if (convertType(parent) === undefined || parent === nodes[i][id]) {
-      tree_roots.push(nodes[i])
+      if (nodes[i].id !== '') {
+        tree_roots.push(nodes[i])
+      }
     } else {
       if (indexed_nodes[parent] !== undefined) {
         indexed_nodes[parent].children.push(nodes[i])
