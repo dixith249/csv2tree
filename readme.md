@@ -80,10 +80,6 @@ This data is typical of the query output of a table which contains a 1:n parent 
 				]
 			}
 		]
-	},
-	{
-		"id": "",
-		"children": []
 	}
 ]
 ~~~
