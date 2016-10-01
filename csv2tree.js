@@ -38,7 +38,7 @@ function getTree (nodes, id, parent_id, callback) {
     indexed_nodes[nodes[i][id]] = nodes[i]
     indexed_nodes[nodes[i][id]].children = []
   }
-  for (var i = 0; i < nodes.length; i++) {
+  for (i = 0; i < nodes.length; i++) {
     var parent = nodes[i][parent_id]
     if (convertType(parent) === undefined || parent === nodes[i][id]) {
       if (nodes[i].id !== '') {
